@@ -20,7 +20,7 @@ public class CDR {
         try {
             this.dateTimeCallStart = format.parse(dateTimeCallStart);
             this.dateTimeCallEnd = format.parse(dateTimeCallEnd);
-            this.callTime = this.dateTimeCallEnd.getTime() - this.dateTimeCallStart.getTime();
+            this.callTime = (this.dateTimeCallEnd.getTime() - this.dateTimeCallStart.getTime()) / 1000 / 60 + 1;
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }

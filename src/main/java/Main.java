@@ -17,7 +17,7 @@ public class Main {
             String[] strArr = cdrString.replace(" ", "").split(",");
             Sub currentSub = subs.get(strArr[1]);
             if (currentSub == null) {
-                System.out.println(strArr[2]);
+                //System.out.println(strArr[0] + " + " + strArr[1] + " + " + strArr[2] + " + " + strArr[3] + " + " + strArr[4]);
                 subs.put(strArr[1], new Sub(new CDR(strArr[0], strArr[2], strArr[3]), strArr[4]));
             } else {
                 currentSub.addNewCall(new CDR(strArr[0], strArr[2], strArr[3]));

@@ -9,15 +9,16 @@ public class Sub {
 
     Sub(CDR newCDR, String subscriptionRate) {
         this.subscriptionRate = subscriptionRate;
+        this.cash = 0d;
         switch (this.subscriptionRate) {
             case ("06"):
-                this.minutesInRate = (long) (300 * 60 * 1000);
-                this.cash += 100d;
+                this.minutesInRate = 300L;
+                this.cash += 100.0;
                 break;
             case ("03"):
                 break;
             case ("11"):
-                this.minutesInRate = (long) 100 * 60 * 1000;
+                this.minutesInRate = 100L;
                 break;
         }
         calls = new ArrayList<>();
@@ -28,10 +29,18 @@ public class Sub {
         calls.add(newCDR);
         switch (this.subscriptionRate) {
             case ("03"):
-                newCDR.setCost(newCDR.getCallTime() / 1000 / 60 * 1.5);
+                if (newCDR.getCallType().equals("02")) {
+                    newCDR.setCost(0d);
+                } else {
+                    newCDR.setCost(newCDR.getCallTime() * 1.5);
+                }
                 break;
             case ("06"):
-                newCDR.setCost(countCost(newCDR.getCallTime(), 1d, 0d));
+                if (newCDR.getCallType().equals("02")) {
+                    newCDR.setCost(0d);
+                } else {
+                    newCDR.setCost(countCost(newCDR.getCallTime(), 1d, 0d));
+                }
                 break;
             case ("11"):
                 if (newCDR.getCallType().equals("02")) {
@@ -46,15 +55,16 @@ public class Sub {
     private Double countCost(Long callTime, Double ratePrice, Double ratePriceSpecial) {
         double result = 0;
         if (minutesInRate == 0) {
-            long minutes = callTime / 1000 / 60 + 1;
-            result = (double) minutes * ratePrice;
+            result = (double) callTime * ratePrice;
         } else if (minutesInRate > 0) {
             if (minutesInRate < callTime) {
+                result = minutesInRate * ratePriceSpecial;
+                callTime -= minutesInRate;
                 minutesInRate = 0L;
-                result = (double) (Math.abs(minutesInRate - callTime) / 1000 / 60) * ratePrice;
+                result += (double) callTime * ratePrice;
             } else {
                 minutesInRate -= callTime;
-                result = (double) callTime / 1000 / 60 * ratePriceSpecial;
+                result = (double) callTime * ratePriceSpecial;
             }
         }
         return result;
